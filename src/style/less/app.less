@@ -1,0 +1,229 @@
+/* === app基础样式  (start) === */
+
+html,body {
+	height: 100%;
+}
+
+/** iOS h5页面上下滑动卡顿问题  **/
+* {
+    -webkit-overflow-scrolling: touch;
+}
+
+body {
+	-webkit-text-size-adjust: none;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-font-smoothing: antialiased;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-color: #f2f2f2;
+	overflow-x: hidden;
+	color: #333;
+	overflow-y: auto;
+}
+
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
+	margin: 0;
+	padding: 0;
+}
+
+body,button,input,select,textarea {
+	font: normal 14px/1.5 "PingFang SC", "Heiti SC", "Arial", "Lucida Grande", Verdana, STXhei, "Microsoft YaHei", "hei";
+}
+
+img {
+	max-width: 100%;
+	border: 0;
+	vertical-align: middle;
+	-ms-interpolation-mode: bicubic;
+	-webkit-user-drag: none;
+}
+li{
+	display:block;
+}
+[v-cloak] {
+	display: block;
+}
+
+.app {
+	height: 100%;
+	position: relative;
+	max-width: 540px;
+	margin: 0 auto;
+	background-color: #f2f2f2;
+}
+
+.mui-content {
+	//防止fixed元素在动画时抖动
+	.next-enter-active, .prev-enter-active {
+	    min-height: -moz-calc(~'100vh - 44px');
+		min-height: -webkit-calc(~'100vh - 44px');
+		min-height: calc(~'100vh - 44px');
+	}
+}
+
+.toolbar-fixed {
+	padding-bottom: 50px;
+}
+
+.views,.view,.pages {
+	position: relative;
+//	overflow: auto; //设置overflow，不然view的高度是随从pages margin-top开始计算，但一旦设置了对于iOS弹窗会显示不出来
+}
+
+.pages {
+	height: auto;
+	min-height: 100vh;
+	// 为了兼容APP，webview的高度是100%，而mui 的scroll-box必须是指定高度的，针对于padding-top无效
+	&.mui-content {
+	    padding-top: 0px;
+	    margin-top: 44px;
+	    min-height: -moz-calc(~'100vh - 44px');
+	    min-height: -webkit-calc(~'100vh - 44px');
+	    min-height: calc(~'100vh - 44px');
+	    
+	    &.toolbar-fixed {
+	        min-height: -moz-calc(~'100vh - 44px - 50px');
+	        min-height: -webkit-calc(~'100vh - 44px - 50px');
+	        min-height: calc(~'100vh - 44px - 50px');
+	    }
+	}
+	
+	&.toolbar-fixed {
+        padding-bottom: 0px;
+        margin-bottom: 50px;
+        min-height: -moz-calc(~'100vh - 50px');
+        min-height: -webkit-calc(~'100vh - 50px');
+        min-height: calc(~'100vh - 50px');
+    }
+}
+
+.views .view .pages {
+	height: 100%;
+	[data-page] {
+		height: 100%;
+		.page-content {
+			height: 100%;
+		}
+	}
+}
+
+.view {
+	margin: 0 auto;
+	width: 100%;
+	min-width: 320px;
+	max-width: 540px;
+	display: -webkit-flex;
+	display: flex;
+}
+
+/*下一页*/
+
+.next-enter-active {
+	-webkit-transition: all 0.2s ease;
+	transition: all 0.2s ease;
+	opacity: 1;
+	position: absolute;
+	min-width: 320px;
+	max-width: 540px;
+	width: 100vw;
+}
+
+.next-enter,.next-leave-active {
+	opacity: 0;
+	-webkit-transform: translate3d(50%, 0, 0);
+	transform: translate3d(50%, 0, 0);
+}
+
+.next-leave-active {
+	opacity: 0;
+	-webkit-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
+}
+
+/*上一页*/
+.prev-enter-active {
+	-webkit-transition: all 0.2s ease;
+	transition: all 0.2s ease;
+	min-width: 320px;
+	max-width: 540px;
+	width: 100vw;
+}
+
+.prev-enter,.prev-leave-active {
+	opacity: 0;
+	-webkit-transform: translate3d(-50%, 0, 0);
+	transform: translate3d(-50%, 0, 0);
+}
+
+.prev-active {
+	opacity: 0;
+	-webkit-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
+}
+
+::scrollbar {
+    display: none;
+}
+
+::-webkit-scrollbar {
+	display: none;
+}
+
+.mui-title {
+	font-style: normal;
+	font-weight: normal;
+}
+
+.mui-bar-nav.mui-bar .right-bar-text {
+	font-size: 14px;
+	line-height: 24px;
+	color: #999999;
+}
+
+.mui-icon-left-nav:before {
+	color: #afafaf;
+}
+
+.overflow-scroll {
+	overflow-x: hidden;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
+	-ms-overflow-style: -ms-autohiding-scrollbar;
+}
+  
+/******** 图片懒加载样式 start *******/
+@-webkit-keyframes imgLazyFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes imgLazyFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+img[lazy=loaded], img[lazy=error] {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-name: imgLazyFadeIn;
+    animation-name: imgLazyFadeIn;
+}
+
+/******** 图片懒加载样式 end *******/
+
+/******** iOS状态栏(ios contents高度是从状态栏开始) start *****/
+.ios-statusbar {
+    padding-top: 20px;
+}
+/******** iOS状态栏(ios contents高度是从状态栏开始) end *****/

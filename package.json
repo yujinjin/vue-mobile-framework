@@ -1,0 +1,71 @@
+{
+	"name": "mobile",
+	"version": "1.0.0",
+	"description": "724 web App",
+	"main": "js/entrance.js",
+	"keywords": "vue 移动端框架",
+	"homepage": "",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "http://tfs.jk724.cn:8080/tfs/DefaultCollection/JK724/_git/JK724.Mobile"
+	},
+	"scripts": {
+		"R_DEV": "set NODE_RUN=1&&node webpack.config",
+		"MR_DEV": "export NODE_RUN=1&&node webpack.config",
+		"B_DEV":"set NODE_RUN=0&&webpack",
+		"MB_DEV": "export NODE_RUN=0&&webpack",
+		"R_UAT": "set NODE_ENV=UAT&&set NODE_RUN=1&&node webpack.config",
+		"MR_UAT": "export NODE_ENV=UAT&&export NODE_RUN=1&&node webpack.config",
+		"B_UAT": "set NODE_ENV=UAT&&set NODE_RUN=0&&webpack",
+		"MB_UAT": "export NODE_ENV=UAT&&export NODE_RUN=0&&webpack",
+		"R_PRD": "set NODE_ENV=PRD&&set NODE_RUN=1&&node webpack.config",
+		"MR_PRD": "export NODE_ENV=PRD&&export NODE_RUN=1&&node webpack.config",
+		"B_PRD": "set NODE_ENV=PRD&&set NODE_RUN=0&&webpack",
+		"MB_PRD": "export NODE_ENV=PRD&&export NODE_RUN=0&&webpack"
+	},
+	"dependencies": {
+		"vue": "^2.4.2",
+		"vue-router": "^2.5.3",
+    	"vue-loader": "11.3.4",
+    	"vue-template-compiler": "^2.4.2",
+    	"vuex": "^2.3.1"
+	},
+	"devDependencies": {
+		"axios": "^0.15.3",
+		"lrz": "^4.9.40",
+		"iscroll": "^5.2",
+		"swiper": "^3.4.2",
+		"autoprefixer": "^6.4.0",
+	    "babel-core": "^6.26.0",
+	    "babel-eslint": "^7.2.3",
+	    "babel-loader": "^7.1.2",
+	    "babel-plugin-transform-runtime": "^6.23.0",
+	    "babel-preset-es2015": "^6.24.1",
+	    "babel-preset-stage-2": "^6.24.1",
+	    "babel-register": "^6.26.0",
+	    "babel-polyfill": "^6.26.0",
+		"cross-env": "^1.0.6",
+		"css-loader": "^0.28.0",
+		"less": "^2.7.1",
+		"less-loader": "^4.0.0",
+		"node-sass": "^4.5.0",
+    	"sass-loader": "^6.0.0",
+		"file-loader": "^0.11.0",
+		"html-loader": "^0.5.1",
+		"html-webpack-plugin": "^2.30.1",
+		"friendly-errors-webpack-plugin": "^1.6.1",
+		"jshint": "^2.9.4",
+		"jshint-loader": "^0.8.3",
+		"style-loader": "^0.13.1",
+		"url-loader": "^0.5.7",
+		"extract-text-webpack-plugin": "^3.0.0",
+		"opn": "^4.0.2",
+   		"webpack": "^3.5.5",
+   		"webpack-dev-server": "^2.7.1"
+	},
+	"engines": {
+		"node": ">=5.0.0",
+		"npm": ">=3.3.6"
+	}
+}
