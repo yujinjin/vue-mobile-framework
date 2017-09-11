@@ -3,6 +3,7 @@
  * 时间：2015-08-04
  * 描述：APP 全局业务逻辑
  */
+import store from "../store/"
 export default{
 	//判断当前用户信息是否登录
 	isLogin() {
@@ -18,10 +19,10 @@ export default{
     	//如果没有邀请码肯定是要重新登录的。
     	if(_userInfo.expiredTime && (_userInfo.expiredTime - _currentTime) > 0 && _userInfo.referralCode && _userInfo.info) {
     		return _userInfo;
-    	} else {
+    	} else if(_userInfo.token) {
     		app.globalService.setUserInfo({});
-    		return {};
     	}
+    	return {};
     },
 
     //退出登录
@@ -47,6 +48,8 @@ export default{
     	if(_is_save) {
     		app.utils.localStorage("siteLocalStorage", JSON.stringify(_site_local_storage));
     	}
+    	// 触发设置用户信息时的事件
+    	store.dispatch("trigger",{eventName: "setUserInfo", args: [_site_local_storage.userInfo]});
     },
 
     //获取userKey

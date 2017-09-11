@@ -1,5 +1,5 @@
 <template>
-	<div class="modal fade" v-show="show" v-bind:style="{backgroundColor:opacity}" @click.stop.prevent="modalFadeClick">
+	<div class="modal fade" v-show="show" v-bind:style="{backgroundColor:opacity}" @touchmove.stop.prevent @click.stop.prevent="modalFadeClick">
 		<div class="modal-dialog" :class="className">
 			<div class="modal-content" v-bind:style="{width: width?width:'270px', height: height?height:'inherit'}">
 				<div class="modal-header" v-if="title">

@@ -5,6 +5,7 @@
  */
 import abstractEnv from './abstract-env'
 import hybrid from '../utils/hybrid'
+import store from '../store/'
 
 //header 加入滚动事件，用于判断header逐渐显示/隐藏,透明的功能,目前主要用于APP环境
 let scrollNavbarStatusEvent = {
@@ -160,6 +161,8 @@ export default class appEnv extends abstractEnv {
 	    	if(_is_save) {
 	    		app.utils.localStorage("siteLocalStorage", JSON.stringify(_site_local_storage));
 	    	}
+	    	// 触发设置用户信息时的事件
+    		store.dispatch("trigger",{eventName: "setUserInfo", args: [_site_local_storage.userInfo]});
 		}
 		//必须重置APP header、footer状态
 		this.store.resetHeader({
