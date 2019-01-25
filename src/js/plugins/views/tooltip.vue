@@ -1,19 +1,16 @@
 <template>
-	<div class="tooltip" :class="classes" v-show="show" @click.stop.prevent="hideTooltip">
-		<div class="tooltip-inner" :class="className">
-			<div class="tooltip-content" v-html="contet"></div>
-			<div class="tooltip-arrow"></div>
-		</div>
+	<div class="tooltip" :class="classes" v-show="isShow" @click.stop.prevent>
+		<div class="tooltip-arrow"></div>
+		<div class="tooltip-inner" v-html="content"></div>
 	</div>
 </template>
 <script>
 	module.exports = {
 		data: function() {
 			return {
-				show: false,
+				isShow: false,
 				classes: [],
-				content: "",
-				positions: "top"
+				content: ""
 			}
 		},
 		mounted() {
@@ -24,15 +21,21 @@
 			init: function() {
 				//this.show = true;
 			},
-			showTooltip(options){
-				let defaults = Object.assign({classes: [], content: "", positions: "top"}, options || {});
-				this.show = true;
-				this.classes = defaults.classes;
-				this.content = defaults.content;
-				
+			initValue(options){
+				if(typeof(options) === "string") {
+					options = {content: options};
+				}
+				this.content = options.content || "";
+				this.classes = options.classes || [];
 			},
-			hideTooltip(){
-				this.show = false;
+			show(){
+				this.isShow = true;
+			},
+			hide(){
+				this.isShow = false;
+			},
+			toggle(){
+				this.isShow = !this.isShow;
 			},
 			// destroy
 			destroy() {
@@ -43,15 +46,92 @@
 </script>
 <style lang="less" scoped>
 	.tooltip {
-		position: fixed;
-		z-index: 9999;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0, 0, 0, .8);
-		display: table;
-		transition: opacity .3s ease;
+		position: absolute;
+		left: 0px;
+		top: 0px;
 		
+		&.fade {
+			opacity: 0;
+		}
+		
+		.tooltip-arrow {
+			width: 0;
+		    height: 0;
+		    border-style: solid;
+		    position: absolute;
+		    /*margin: 5px;*/
+		    border-color: #666;
+		}
+		
+		&.top { 
+			padding-bottom: 7px;
+			
+			.tooltip-arrow {
+				border-width: 5px 5px 0;
+			    border-left-color: transparent!important;
+			    border-right-color: transparent!important;
+			    border-bottom-color: transparent!important;
+			    bottom: -5px;
+			    left: calc(~'50% - 5px');
+			    margin-top: 0;
+			    margin-bottom: 7px;
+			}
+		}
+		&.right {
+			padding-left: 5px;
+			
+			.tooltip-arrow {
+				border-width: 5px 5px 5px 0;
+			    border-left-color: transparent!important;
+			    border-top-color: transparent!important;
+			    border-bottom-color: transparent!important;
+			    left: -5px;
+			    top: calc(50% - 5px);
+			    margin-left: 5px;
+			    margin-right: 0;
+			}
+		}
+		&.bottom {
+			padding-top: 7px;
+			
+			.tooltip-arrow {
+		    	border-width: 0 5px 5px;
+			    border-left-color: transparent!important;
+			    border-right-color: transparent!important;
+			    border-top-color: transparent!important;
+			    top: -5px;
+			    left: calc(~'50% - 5px'); 
+			    margin-top: 7px;
+			    margin-bottom: 0;
+		    }
+		}
+		
+		&.left {
+			padding-right: 5px;
+			
+			.tooltip-arrow {
+		    	border-width: 5px 0 5px 5px;
+			    border-top-color: transparent!important;
+			    border-right-color: transparent!important;
+			    border-bottom-color: transparent!important;
+			    right: -5px;
+			    top: calc(50% - 5px);
+			    margin-left: 0;
+			    margin-right: 5px;
+		    }
+		}
+		
+		.tooltip-inner {
+			max-width: 250px;
+			background: #666666;
+		    padding: 5px;
+		    border-radius: 4px;
+		    display: inline-block;
+		    text-align: left;
+		    color: #FFFFFF;
+		    font-size: 12px;
+		    line-height: 20px;
+		    font-weight: normal;
+		}
 	}
 </style>

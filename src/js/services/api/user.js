@@ -3,7 +3,7 @@
  * 时间：2015-08-04
  * 描述：用户中心API接口
  */
-define(function () {
+export default (function () {
     //用户
     return {
     	//登录用户

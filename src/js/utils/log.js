@@ -35,10 +35,13 @@ const sendLogMessage = function(message, level){
 	} catch(e) {}
 	info.LogLevel = level;
 	info.Message = message;
-	if(app.globalService.getLoginUserInfo().info) {
-		info.UserId = app.globalService.getLoginUserInfo().info.name;
-	}
-	return app.api.common.sendLogMessage(info);
+	try {
+		if(app.globalService.getStoreLoginUserInfo().userId) {
+			info.UserId = app.globalService.getStoreLoginUserInfo().userId;
+		}
+	} catch(e){ }
+	// return app.api.common.sendLogMessage(info);
+	return Promise.resolve(true);
 }
 
 export default {

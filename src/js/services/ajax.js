@@ -4,7 +4,6 @@
  * 描述：交互式数据请求
  */
 import axios from 'axios'
-import localapp from '../app'
 import globalService from './global-service'
 
 export default function(){
@@ -20,7 +19,7 @@ export default function(){
 		//请求失败
 		error: null,
 		// 将被添加到`url`前面，除非`url`是绝对的。
-   		baseURL: localapp.Config && localapp.Config.isDebug ? "" : config.webapiDomain,
+   		baseURL: config.webapiDomain,
    		//是发出请求时使用的请求方法
 		method: 'post',
 		//请求超时时间
@@ -38,8 +37,11 @@ export default function(){
 		//auth: {},
 		//指示是否跨站点访问控制请求,应该是用证书
 		withCredentials: false, 
+		validateStatus: function (status) {
+		    return status >= 200 && status < 300; // default
+		},
 		//作为请求主体发送的数据,仅适用于请求方法“PUT”，“POST”和“PATCH”
-		data: {},
+		// data: {},
 		//作为get请求数据参数对象
 		params: {},
 		//要发送的自定义 headers,{'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded'},
@@ -48,31 +50,40 @@ export default function(){
 	//添加请求拦截器
 	instance.interceptors.request.use(function (config) {
 	    //在发送请求之前做某事
-	    if(globalService.getLoginUserInfo().token){
-	    	config.headers["Authorization"] = globalService.getLoginUserInfo().token;
+	    if(globalService.getLoginUserToken()){
+	    	config.headers["Authorization"] = globalService.getLoginUserToken();
 	    }
+	    if(app.Config.isApp) {
+	    	config.headers["Abplus-SysCode"] = app.Config.device.isIOS ? 'IPhone':'Android';
+	    	// 国产一期时候发现身份证号、姓名app要兼容老版本，但H5不用所以把这个注释掉，指定所有H5的调用全部用最新版本号
+	    	//config.headers["Abplus-ClientVersion"] = app.Config.version;
+	    }
+	    config.headers["Abplus-ClientVersion"] = app.Config.innerVersion;
 	    //如果配置传入显示加载选项就显示加载项
 	    if(config.isShowLoading === true) {
 	    	config.showLoadingTimerId = setTimeout(()=>app.showLoading(), 300);
 	    }
 	    return config;
 	}, function (error) {
-		app.log.error("接口出错:"+JSON.stringify(error));
+		if(error.config){
+	    	// 直接JSON error对象在app环境中会报错，现在只能做config、xhr实例
+	    	app.log.error("接口出错:"+JSON.stringify({config: error.config}));
+	    }
 	    //请求错误时做些事
 	    return Promise.reject(error);
 	});
 	//添加响应拦截器
 	instance.interceptors.response.use(function (response) {
 	    //对响应数据做些事
-	    let _response = null, isSuccess = true;
+	    let _response = response, isSuccess = true;
 	    if(response.config.isResultData === false){
 	    	_response = response;
 	    } else if(response.data && response.data.success){
 	    	_response = response.data.result;
 	    }
-	    if(response.config.isShowError && response.data.success === false) {
+	    if(response.config.isShowError && response.data && response.data.success === false) {
 	    	isSuccess = false;
-	    	if(response.data && response.data.error && response.data.error.message){
+	    	if(response.data.error && response.data.error.message){
 		    	app.modals.error(response.data.error.message);
 		    } else {
 		    	app.modals.error("小七带着服务器去保养喽，请稍后重试~");
@@ -93,6 +104,11 @@ export default function(){
 	    }
 	    return _response;
 	}, function (error) {
+		if(error.response && error.response.status === 503) {
+			// 状态503做特殊处理
+			app.showQueueWaitedDialog();
+			return Promise.reject(error);
+		}
 	    //请求错误时做些事
 	    //app.log.debug(error);
 	    const xhr = error.response && error.response.data;
@@ -122,7 +138,10 @@ export default function(){
 	    	}
 	    	app.hideLoading();
 	    }
-	    app.log.error("接口出错:"+JSON.stringify(error));
+	    if(error.config){
+	    	// 直接JSON error对象在app环境中会报错，现在只能做config、xhr实例
+	    	app.log.error("接口出错:"+JSON.stringify({config: error.config, data: xhr}));
+	    }
 	    return Promise.reject(error);
 	});
 	instance.axios = axios;

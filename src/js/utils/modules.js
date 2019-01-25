@@ -54,8 +54,19 @@ export default {
 			}
 			return target;
 		}
-		let _common = {}
-		let [_mounted, _beforeRouteUpdate, _beforeRouteEnter]= [_clone_module.mounted, _clone_module.beforeRouteUpdate, _clone_module.beforeRouteEnter];
+		let _common = {};
+		// 标签页切换到后台，或从后台切换到前台事件变化
+		let pageEvnet = {
+			eventName: 'hidden' in document ? 'visibilitychange' : ('webkitHidden' in document ? 'webkitVisibilitychange' : null),
+			onPageVisibilityChange(e){
+				if(document.hidden && typeof(this.onPageHide) === "function") {
+					this.onPageHide(true, e);
+				} else if(!document.hidden && typeof(this.onPageShow) === "function"){
+					this.onPageShow(true, e);
+				}
+			}
+		}
+		let [_mounted, _beforeRouteUpdate, _beforeRouteLeave]= [_clone_module.mounted, _clone_module.beforeRouteUpdate, _clone_module.beforeRouteLeave];
 		_clone_module.mounted = function(){
 			if(_mounted) {
 				Promise.all([_mounted.call(this)]).then(()=>{
@@ -67,17 +78,44 @@ export default {
 			if(this.$route.meta.isDefaultShare != false) {
 				this.$share();
 			}
+			if(this.onPageHide || this.onPageShow) {
+				if(pageEvnet.eventName) {
+					this.onPageVisibilityChange = e => pageEvnet.onPageVisibilityChange.call(this, e);
+					document.addEventListener(pageEvnet.eventName, this.onPageVisibilityChange);
+				} else {
+					this.onPageHide && this.onPageHide(false);
+					this.onPageShow && this.onPageShow(false);
+					app.log.error("当前手机不支持页面后台切换事件变化");
+				}
+			}
+			dataReport.initPage(this.$route);
 		}
 		_clone_module.beforeRouteUpdate = function(to, from, next){
 			if(_beforeRouteUpdate) {
 				Promise.all([_beforeRouteUpdate.call(this, to, from, next)]).then(()=>{
 					app.loadingAnimation.hide();
+					app.vueApp.$store.dispatch("updateDirection", null);
 				}).catch(()=>{app.loadingAnimation.hide();});
 			} else {
 				next();
 				app.loadingAnimation.hide();
+				app.vueApp.$store.dispatch("updateDirection", null);
 			}
 		}
+		_clone_module.beforeRouteLeave = function(to, from, next) {
+			if(_beforeRouteLeave) {
+				Promise.all([_beforeRouteLeave.call(this, to, from, next)]).then(()=>{
+					dataReport.push({eventName: 'OnExit', actionName: 'exit'});
+				}).catch(()=>{app.loadingAnimation.hide();});
+			} else {
+				dataReport.push({eventName: 'OnExit', actionName: 'exit'});
+				next();
+			}
+			if(this.onPageVisibilityChange) {
+				document.removeEventListener(pageEvnet.eventName, this.onPageVisibilityChange);
+			}
+		}
+		_clone_module.methods = _clone_module.methods || {};
 		return deepCopy(_common, _clone_module);
 	}
 }

@@ -9,7 +9,7 @@ export default {
 		// direction: 'forward',
 		direction: null, //going：前进|backing后退|replace
 		transition: "next", //动画方向
-		navbarTitle: "首页", //app的导航页标题
+		navbarTitle: "", //app的导航页标题
 		isShowHead: true, //是否显示app 的导航栏
 		isShowFoot: false, //是否显示foot栏
 		headerOpacity: 1, // 默认1, header透明度，该参数只用于app环境，这里要和header里的opacity分开
@@ -17,6 +17,7 @@ export default {
 		isShowAppShare: false, // 是否显示App分享，APP专用
 		headerState: false, // header修改状态 主要用于判断页面重置修改的header状态
 		locationInfo: {
+			loginUserInfo: null // 当前登录用户信息, {token: 用户登录token, expiredTime： token过期时间, isBindMobile: 当前登录用户是否绑定手机号，默认为false, referralCode: 当前用户的邀请码，userId: 用户ID, name: 用户昵称， headImgURL： 头像}
 		}, //app临时数据
 		header: {
 			left: {
@@ -144,7 +145,7 @@ export default {
 				state.header.translucent = translucent;
 			}
 			// 环境兼容修改导航状态
-			app.compatible.store.updateHeader(app.utils.extend({}, state.header));
+			app.compatible.store.updateHeader(app.utils.extend({}, {left, center, right, opacity, translucent}));
 		},
 		//重置header内容
 		resetHeader(state) {
@@ -183,8 +184,22 @@ export default {
 			state.headerOpacity = 1;
 			state.isTranslucent = true;
 			state.headerState = false;
+			state.navbarTitle = "";
+			
 			// 环境兼容修改导航状态
 			app.compatible.store.resetHeader(app.utils.extend({}, state.header));
+		},
+		//更新个人中心用户信息
+		updateUserCenterInfo(state, userInfo = {}){
+			state.locationInfo.userCenterInfo = userInfo;
+		},
+		//更新购物车数量
+		updateShoppingCartCount(state, num){
+			state.locationInfo.shoppingCartCount = num;
+		},
+		// 更新当前登录用户手机号绑定状态
+		updateBindMobileState(state, isBind) {
+			state.isBindMobile = isBind;
 		}
 	},
 	actions: {
@@ -211,6 +226,15 @@ export default {
 		},
 		resetHeader({commit}) {
 			commit("resetHeader");
+		},
+		updateUserCenterInfo({commit}, userInfo){
+			commit("updateUserCenterInfo", userInfo);
+		},
+		updateShoppingCartCount({commit}, num){
+			commit("updateShoppingCartCount", num);
+		},
+		updateBindMobileState({commit}, isBind){
+			commit("updateBindMobileState", isBind);
 		}
 	}
 }

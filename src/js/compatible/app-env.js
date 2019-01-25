@@ -6,6 +6,7 @@
 import abstractEnv from './abstract-env'
 import hybrid from '../utils/hybrid'
 import store from '../store/'
+import dataReport from '../services/data-report'
 
 //header 加入滚动事件，用于判断header逐渐显示/隐藏,透明的功能,目前主要用于APP环境
 let scrollNavbarStatusEvent = {
@@ -54,37 +55,73 @@ export default class appEnv extends abstractEnv {
 	constructor() {
 		super();
 	}
-	
+
 	// 初始化vueApp初始化
 	initVue(initVueFun){
 		app.hybrid = hybrid;
+		hybrid.getNativeData({actions: "referrerPage"}, function(data){
+			try {
+				data = JSON.parse(data);
+				dataReport.setReferrer(data.referrerPage);
+			} catch(e){
+				app.log.error("解析app的协议失败:" + e.message + "协议内容：" + data);
+			}
+		});
+		hybrid.getNativeData({actions: "sessionId"}, function(data){
+			try {
+				data = JSON.parse(data);
+				app.globalService.setSessionId(data.sessionId);
+			} catch(e){
+				app.log.error("解析app的协议失败:" + e.message + "协议内容：" + data);
+			}
+		});
+		hybrid.getNativeData({actions: "cookieId"}, function(data){
+			try {
+				data = JSON.parse(data);
+				app.globalService.setUserKey(data.cookieId);
+			} catch(e){
+				app.log.error("解析app的协议失败:" + e.message + "协议内容：" + data);
+			}
+		});
+		hybrid.getNativeData({actions: "deviceInfo"}, function(data){
+			try {
+				data = JSON.parse(data);
+				app.globalService.setDeviceId(data.deviceId);
+			} catch(e){
+				app.log.error("解析app的协议失败:" + e.message + "协议内容：" + data);
+			}
+		});
 		//查询页面路由配置列表数据
 		app.api.common.queryRoutesList().then((data)=>{
 			this.routers.routeList = data || [];
 			// 查询当前APP用户登录信息
 			hybrid.getUserInfo((userInfo)=>{
-				let _token = app.globalService.getLoginUserInfo().token;
+				let _token = app.globalService.getLoginUserToken();
 				try {
 					userInfo = JSON.parse(userInfo);
+					if(userInfo.success === true) {
+						userInfo = userInfo.data || {};
+					}
 				} catch(e){}
 				// TODO: 确认当前APP用户存储的登录信息内容
 				if(userInfo.authToken) {
 					// 页面初始化时如果当前APP有用户登录信息就以当前登录用户的信息为准，设置H5的登录信息
 					app.globalService.setUserInfo({
-						referralCode: userInfo.referralCode, 
-						token: userInfo.authToken, 
-						usernameOrEmailAddress: "", 
-						expiredTime: userInfo.expiredIn, 
+						referralCode: userInfo.referralCode,
+						token: userInfo.authToken,
+						expiredTime: userInfo.expiredIn,
+						isBindMobile: true,
 						info: {
-							"name": userInfo.name,
+							"userId": userInfo.userInfo.userId,
+							"name": userInfo.userInfo.name,
 						    "profile": {
 						        "birthday": userInfo.userInfo.profile.birthday, //生日
 						        "gender": userInfo.userInfo.profile.gender //性别
 						    },
 						    "fullName": userInfo.userInfo.fullName,
-						    "headImgURL": userInfo.userInfo.headImgURL ,
+						    "headImgURL": userInfo.userInfo.headImgURL,
 						    "idCardNumber": userInfo.userInfo.idCardNumber,
-						    "weChatQRCodeImgURL": userInfo.weChatQRCodeImgURL
+						    "weChatQRCodeImgURL": userInfo.userInfo.weChatQRCodeImgURL
 						}
 					}, false);
 				} else if(_token){
@@ -127,42 +164,29 @@ export default class appEnv extends abstractEnv {
 		app.utils.getAppStorage = function(key, callbackFun){
 			hybrid.getStorage({name: key}, callbackFun);
 		}
-		// TODO: 重写globalService.getLoginUserInfo方法
-		app.globalService.getLoginUserInfo = function(){
-			const [_currentTime, _userInfo] = [(new Date()).getTime(), app.getSiteLocalStorage().userInfo || {}];
-	    	//如果没有邀请码肯定是要重新登录的。
-	    	if(_userInfo.expiredTime && (_userInfo.expiredTime - _currentTime) > 0 && _userInfo.referralCode && _userInfo.info) {
-	    		return _userInfo;
-	    	} else {
-	    		app.globalService.setUserInfo({});
-	    		return {};
-	    	}
-		},
-		
+
 		// TODO: 重写globalService.setUserInfo方法
-		app.globalService.setUserInfo = function({referralCode, token, usernameOrEmailAddress, expiredTime = -1, info = {}}, isAppLogin = true){
-			const _site_local_storage = app.getSiteLocalStorage(), _expiredTime = expiredTime;
-    		let _is_save = true;
+		app.globalService.setUserInfo = function({referralCode, token, expiredTime = -1, info = {}, isBindMobile = false}, isAppLogin = true){
+			let _login_user_info = this.getSiteLocalStorage("userInfo");
 	    	if(expiredTime > 0) {
-				if(_site_local_storage.userInfo == null || typeof(_site_local_storage.userInfo) != "object"){
-					_site_local_storage.userInfo = {};
+				if(_login_user_info == null || typeof(_login_user_info) != "object"){
+					_login_user_info = {};
 				}
-				expiredTime = (new Date()).getTime() + (expiredTime - 60) * 1000;
-				Object.assign(_site_local_storage.userInfo, {referralCode, token, usernameOrEmailAddress, expiredTime, version: app.Config.innerVersion, info: info});
-				// APP去登录
+				expiredTime = new Date().getTime() + (expiredTime - 60) * 1000;
+	            Object.assign(_login_user_info, {referralCode, token, isBindMobile: false, expiredTime, version: app.Config.innerVersion, info: info});
+	            this.setSiteLocalStorage("userInfo", _login_user_info);
+	            store.dispatch("updateLocationInfo", {key: "loginUserInfo", value: {token, expiredTime, referralCode, isBindMobile, userId: info.userId, name: info.name, headImgURL: info.headImgURL}});
+	    		store.dispatch("trigger",{eventName: "setUserInfo", args: [_login_user_info]});
+	    		// APP去登录
 				if(isAppLogin) {
-					hybrid.login({referralCode, token, usernameOrEmailAddress, expiredTime: _expiredTime, info});
+					hybrid.login({referralCode, token, expiredTime: expiredTime, info});
 				}
-	    	} else if(JSON.stringify(_site_local_storage.userInfo) !== "{}"){
-	    		_site_local_storage.userInfo = {};
-	    	} else {
-	    		_is_save = false;
+	    	} else if(_login_user_info){
+	            this.setSiteLocalStorage("userInfo");
+	            store.dispatch("updateLocationInfo", {key: "loginUserInfo", value: null});
+	            // 触发设置用户信息时的事件
+	    		store.dispatch("trigger",{eventName: "setUserInfo", args: []});
 	    	}
-	    	if(_is_save) {
-	    		app.utils.localStorage("siteLocalStorage", JSON.stringify(_site_local_storage));
-	    	}
-	    	// 触发设置用户信息时的事件
-    		store.dispatch("trigger",{eventName: "setUserInfo", args: [_site_local_storage.userInfo]});
 		}
 		//必须重置APP header、footer状态
 		this.store.resetHeader({
@@ -173,8 +197,10 @@ export default class appEnv extends abstractEnv {
 			center: {actions: 'empty'},
 	    	right: {actions: 'empty'}
 		});
+		hybrid.showHeader({translucent: true});
+		hybrid.updateFooterState({isShow: false});
 	}
-	
+
 	// 路由
 	routers = {
 		// 初始化routes配置
@@ -188,13 +214,7 @@ export default class appEnv extends abstractEnv {
 				},
 				"product": {
 					isShowAppShare: true // 是否显示分享
-				},
-				"register-by-code": {
-					isShowAppShare: true // 邀請好友是否显示分享
-				},
-				"brand-story": {
-					isShowAppShare: true // 品牌故事是否显示分享
-				},
+				}
 //				"my-profit": {
 //					navbarStatus: {isShowHead: true, isTranslucent: false, headerOpacity: 0}
 //				}
@@ -210,7 +230,7 @@ export default class appEnv extends abstractEnv {
 		},
 		//创建路由
 		createRouter(){
-			
+
 		},
 		//路由访问之前的钩子函数
 		beforeEach(to, from, next, store){
@@ -218,31 +238,51 @@ export default class appEnv extends abstractEnv {
 				//TODO: 兼容
 				//hybrid.clearWebviewFun();
 			}
-			if(scrollNavbarStatusEvent.isAdded) {
-				scrollNavbarStatusEvent.removeEvent();
-			}
 			//TODO: 判断当前路由是否需要跳转native
-			let _find_item = this.routeList.find((item) => {return to.name == item.name});
+			let _to_name = to.name;
+			// 当前版本号低于5.0.0，当前的健康商城全部跳转到首页
+			if(_to_name === "shopping-home" && app.Config.version.split(".")[0] < 5) {
+				_to_name = "home";
+			}
+			let _find_item = this.routeList.find((item) => {return _to_name == item.name});
 			if(_find_item && _find_item.isNative == true){
 				next(false);
-				hybrid.forward({topage: _find_item.name, type: "native", urlParam: Object.assign({}, to.query, to.params)});
+				let _temp_param = {};
+				// 说明当前页面是从native进来的，而现在要在H5中转一下再跳转到navtive replace为true
+				if(_to_name === "order-confirmation") {
+					// h5的详情页到原生的订单确认页参数要特殊处理
+					_temp_param = app.globalService.getShoppingCartOrderPreviewInfo(to.query.id);
+				} else if(_to_name === "login") {
+					// 加这个参数主要用于注册页面的数据上报，判断当前用户注册是因为
+					_temp_param = {fromPageName: from.name};
+				}
+				hybrid.forward({topage: _find_item.name, type: "native", replace: (store.state.appData.direction == "replace" || to.query.fromApp === "true" || to.query.fromApp === true), urlParam: Object.assign({}, to.query, to.params, _temp_param)});
 				return false;
+			}
+			if(scrollNavbarStatusEvent.isAdded) {
+				scrollNavbarStatusEvent.removeEvent();
 			}
 			if(to.meta.navbarStatus && to.meta.navbarStatus.isAlwaysTransparentHead == false) {
 				scrollNavbarStatusEvent.addEvent();
 			}
 			return true;
 		},
-		afterEach(){}
+		afterEach(route, store){
+			switch (route.name) {
+				case 'home':
+					store.dispatch("updateHeader",{left: {actions: 'empty', isShow: false}});
+					//.updateHeaderLeft({actions: 'empty'});
+			}
+		}
 	}
-	
+
 	// vuex store
 	store = {
 		//修改导航标题
 		updateNavbarTitle(title){
 			hybrid.updateHeaderTitle(title);
 		},
-		
+
 		//修改导航状态
 		updateNavbarStatus(oldNavbar, newNavbar){
 			// 是否显示修改Header状态
@@ -262,36 +302,28 @@ export default class appEnv extends abstractEnv {
 				hybrid.updateFooterState({isShow: newNavbar.isShowFoot});
 			}
 		},
-		
+
 		//修改头部导航
-		updateHeader(header){
-			let param = {
-				left: {
-					actions: header.left.actions?header.left.actions:"empty",
-					value: header.left.value || "",
-					icon: header.left.icon,
-					callback: header.left.callback
-				},
-				center: {
-					actions: header.center.actions?header.center.actions:"empty",
-					value: header.center.value || "",
-					icon: header.center.icon,
-					callback: header.center.callback
-				},
-				right: {
-					actions: header.right.actions?header.right.actions:"empty",
-					value: header.right.value || "",
-					icon: header.right.icon,
-					callback: header.right.callback
-				}
+		updateHeader({left, center, right, opacity, translucent}){
+			if (left && typeof(left) === "object") {
+				left.actions =  left.actions || "empty";
+				left.value =  left.value || "";
 			}
-			hybrid.updateHeader(param);
+			if (center && typeof(center) === "object") {
+				center.actions =  center.actions || "empty";
+				center.value =  center.value || "";
+			}
+			if (right && typeof(right) === "object") {
+				right.actions =  right.actions || "empty";
+				right.value =  right.value || "";
+			}
+			hybrid.updateHeader({left, center, right});
 		},
-		
+
 		//重置header内容
 		resetHeader(header, callbackFun){
 //			if(callbackFun && typeof(callbackFun) === "function"){
-//				
+//
 //			} else {
 			this.updateHeader(header);
 			hybrid.showHeader({translucent: true}, (data)=>{app.log.info(data);});
@@ -299,7 +331,7 @@ export default class appEnv extends abstractEnv {
 //			}
 		}
 	}
-	
+
 	// 分享
 	share({shareTitle, shareLink, shareDes, shareImg, onShareAppMessageSuccess, onShareTimelineSuccess}, callbackFun){
 		if(app.vueApp.$route.meta.isShowAppShare === true) {
@@ -316,5 +348,10 @@ export default class appEnv extends abstractEnv {
 			hybrid.updateHeaderRight({actions: 'empty'}, callbackFun);
 		}
 		app.vueApp.$store.dispatch("updateShowAppShareStatus", app.vueApp.$route.meta.isShowAppShare === true);
+	}
+
+	// 通过事件触发分享
+	shareEvent({shareTitle, shareLink, shareDes, shareImg, onShareAppMessageSuccess, onShareTimelineSuccess}, callbackFun) {
+		hybrid.share({title: shareTitle, url: shareLink, desc: shareDes, img: shareImg, onShareAppMessageSuccess, onShareTimelineSuccess}, callbackFun);
 	}
 }

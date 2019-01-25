@@ -2,40 +2,192 @@
 <html>
 	<head>
 	    <meta charset="UTF-8">
-	    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width, minimal-ui">
-	    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width, minimal-ui">
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 		<meta http-equiv="Pragma" content="no-cache" />
 		<meta http-equiv="Expires" content="0" />
-	    <meta name="mobile-web-app-capable" content="yes">
-	    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
-	    <!-- iOS中Safari允许全屏浏览 -->
-	    <meta name="apple-mobile-web-app-capable" content="yes">
-	    <!-- iOS中Safari顶端状态条样式 -->
-	    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-	    <meta name="apple-mobile-web-app-title" content="724">
-	    <!-- 忽略将数字变为电话号码, 忽略自动识别邮箱账号 -->
-	    <meta name="format-detection" content="telephone=no, email=no">
-	    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
-	    <meta name="HandheldFriendly" content="true">
-	    <!-- 微软的老式浏览器 -->
-	    <meta name="MobileOptimized" content="320">
-	    <!-- UC强制竖屏 -->
-	    <meta name="screen-orientation" content="portrait">
-	    <!-- QQ强制竖屏 -->
-	    <meta name="x5-orientation" content="portrait">
-	    <!-- UC强制全屏 -->
-	    <meta name="full-screen" content="yes">
-	    <!-- QQ强制全屏 -->
-	    <meta name="x5-fullscreen" content="true">
-	    <!-- UC应用模式 -->
-	    <meta name="browsermode" content="application">
-	    <!-- QQ应用模式 -->
-	    <meta name="x5-page-mode" content="app">
-	    <!-- windows phone 点击无高光 -->
-	    <meta name="msapplication-tap-highlight" content="no">
-	    <title>移动客户端</title>
+		<!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+		<!-- iOS中Safari允许全屏浏览 -->
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<!-- iOS中Safari顶端状态条样式 -->
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-title" content="724">
+		<!-- 忽略将数字变为电话号码, 忽略自动识别邮箱账号 -->
+		<meta name="format-detection" content="telephone=no, email=no">
+		<!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+		<meta name="HandheldFriendly" content="true">
+		<!-- 微软的老式浏览器 -->
+		<meta name="MobileOptimized" content="320">
+		<!-- UC强制竖屏 -->
+		<meta name="screen-orientation" content="portrait">
+		<!-- QQ强制竖屏 -->
+		<meta name="x5-orientation" content="portrait">
+		<!-- UC强制全屏 -->
+		<meta name="full-screen" content="yes">
+		<!-- QQ强制全屏 -->
+		<meta name="x5-fullscreen" content="true">
+		<!-- UC应用模式 -->
+		<meta name="browsermode" content="application">
+		<!-- QQ应用模式 -->
+		<meta name="x5-page-mode" content="app">
+		<!-- windows phone 点击无高光 -->
+		<meta name="msapplication-tap-highlight" content="no">
+		<title>健康724</title>
+		<style>
+			@-webkit-keyframes circle-loading {
+				100% {
+					-webkit-transform: rotate(-375deg);
+					transform: rotate(-375deg);
+				}
+			}
+			@keyframes circle-loading {
+				100% {
+					-webkit-transform: rotate(-375deg);
+					transform: rotate(-375deg);
+				}
+			}
+			.app-loading-box {
+				display: -webkit-box;
+				display: -ms-flexbox;
+				display: flex;
+				-webkit-box-orient: vertical;
+				-webkit-box-direction: normal;
+				-ms-flex-direction: column;
+				flex-direction: column;
+				-webkit-box-align: center;
+				-ms-flex-align: center;
+				align-items: center;
+				-webkit-box-pack: center;
+				-ms-flex-pack: center;
+				justify-content: center;
+				-webkit-transform: translatey(-100px);
+				-ms-transform: translatey(-100px);
+				transform: translatey(-100px);
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				-webkit-transform: translate(-50%, -50%);
+				-ms-transform: translate(-50%, -50%);
+				transform: translate(-50%, -50%);
+			}
+			.app-loading-box .loading {
+				height: 100px;
+				width: 100px;
+				position: relative;
+			}
+			.app-loading-box .loading .logo {
+				width: 100px;
+				height: 100px;
+			}
+			.app-loading-box .loading .font-7 {
+				width: 35px;
+				height: auto;
+				position: absolute;
+				top: 42px;
+				left: 11px;
+			}
+			.app-loading-box .loading .font-24 {
+				position: absolute;
+				width: 55px;
+				height: auto;
+				right: 2px;
+				top: 30px;
+			}
+			.app-loading-box .loading .icon-arrow {
+				position: absolute;
+				width: 20px;
+				height: auto;
+				right: 2px;
+				bottom: 0px;
+				-webkit-transform: rotate(15deg);
+				-ms-transform: rotate(15deg);
+				transform: rotate(15deg);
+			}
+			.app-loading-box .loading .circle-arrow {
+				border: 3px solid #75ab4c;
+				border-radius: 50%;
+				border-right-color: transparent;
+				-webkit-transform: rotate(-15deg);
+				-ms-transform: rotate(-15deg);
+				transform: rotate(-15deg);
+				-webkit-animation: circle-loading 1.2s infinite;
+				animation: circle-loading 1.2s infinite;
+				will-change: transform;
+				width: 72px;
+				height: 72px;
+				position: absolute;
+				top: 12px;
+				left: 8px;
+			}
+			.app-loading-box .loading-tip {
+				font-size: 14px;
+				color: gray;
+				margin-top: 10px;
+			}
+			@-webkit-keyframes dot {
+				0% {
+					width: 0;
+				}
+				33% {
+					width: 33%;
+				}
+				66% {
+					width: 66%;
+				}
+				100% {
+					width: 100%;
+				}
+			}
+			@keyframes dot {
+				0% {
+					width: 0;
+				}
+				33% {
+					width: 33%;
+				}
+				66% {
+					width: 66%;
+				}
+				100% {
+					width: 100%;
+				}
+			}
+			.app-loading-box .loading-tip .dots {
+				display: inline-block;
+				width: 24px;
+				vertical-align: middle;
+			}
+			.app-loading-box .loading-tip .dots .dots-inner {
+				width: 0;
+				overflow: hidden;
+				-webkit-animation: dot 1.2s infinite;
+				animation: dot 1.2s infinite;
+				will-change: width;
+			}
+		</style>
 	</head>
-	<body>
-	    <div id="app"></div>
+
+	<body ontouchstart>
+		<div id="app">
+			<div class="app-loading-box">
+				<div class="loading loader">
+					<div class="logo">
+						<img class="font-24" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJIAAAA/CAMAAAA8J2GMAAAA51BMVEUAAAB1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0z///+106B2rE37/fnr8+V/slnZ6M2VvnWNumt5rlL1+PHF3LSexIHi7trN4b6myYuFtWC916mwz5mtzZQW0qnPAAAAOHRSTlMAqswRVf6ZBdQiCfADMuv2x0364t24RxSIWg2ccEErGRa9s6GRjXpk6MRpJeQ62ImGg31dHaeWdmMQx1wAAANsSURBVGjerdrpdtowEAXgIcZAvGEMmLKvIYUmTdIlvc7aNE3393+eLmmT1JI9kuzvN5yjM0ijKwniVKHAdjub5btDj/TUX0UQbIjhNaAuGE5Iw4sQEi1ivIYWezkgVftNSDTY0r6EpkaPlMwWkOrzRdK2IBWtAFKdOlekDvRViTUYIsOW/blhYE6cww4yPHe4IrVhIGJqX39mI8uaGFsY2aU8kx1kci3K5xzAyIRyjJrIdkSMEcxMKdObOXI0p1yRnsNI5FGWvos8NWK8g5kdymC9ZVr/C653BDCzR3IxNzXfEmNaZWxPlvOXEMUk46xs5LN9KoMFwYFHEn4DnC6VIobgFYm8dQTWmEqxEhdyjwS7IXghlcI5UJnc+y4UtKgUR0hzZ9JgxGtQKVo2P5Na0oZ7dYWU11SGuIm0tqMUjO6uz9NfrFNx1pENQVUlGH34mHxByoj0Dazp7iO/P3QhqtBT9WMbEjeXyWW6SIGjM5TD7emiEdhQ8LzHB6Pzs4sk+S5OQVX+cRhBmd3ig9HX6yRJbj9Ioxtvtu5AywkfjL7cJr+cyZoZb7bXhJ6FxwWjq8/JbxfpDhC9Id5Ue0AIHS4Yvb9M/viIlCGxvK2LAqfcuC1d+t+SexdfxejGsbowGBETjG4+JX99FlsHZ7cDbXMrPxid/7hI/rlBik+MF21oW9Xzg9HVdfLgWju6TfVHFLQeCryBzN1t8ui9bnRzQmiyl71UMBK3tCc+iQcaxhB67IUvBCNhS3vqTveipQotwelEDEbilvZI3HBfepSrF0CZ3VjFdXowa8rb49n/hJm0eXbPJ7kaZNywMqw9tXo26vupOHGMQpo9kvJtCIK9CSmwXBRSI7k5BN0eKVmjEHtCUmMITj1S4gQwwLfLjfhJj9SMUEysepg+6BGPv9Q0P8SFWdfivH0Us09SrawHFp7XgQH+fCKeJw5JUR/FnKhuJV1S1UAh0VT1kSu2VAyEn1zbsuTar4lCFOMzj1ya3AGNUcy85FV8TLS3o0KcGO2dezHzyKWpOSNFI81b7i0Mrciov/NHJacNM9Eb89blM0UtcfkqNuJuue83/HTgc8+Yeb8xVCFVXb1b7kFQsMfxJrbeLfe6aBTkLZmAVFqQH5OiaaR3y30CQyGpOtL7g4I3rBgak6paJaVKOX4CLc9LfDDW+TAAAAAASUVORK5CYII=" />
+					</div>
+					<div class="circle-arrow">
+						<img class="icon-arrow" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAApCAMAAAButatJAAAAdVBMVEUAAAB1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0yshcfIAAAAJnRSTlMA3vruzqaZkVNJQiAH9Ly0hnUbFehrOi8nEQ3Gw31jXVoz1KpmMiAjISwAAAD1SURBVDjLrdPZboQwDEBRAwmEsMOwzt7F//+JpYxIKCVOHuZKvB0JxbLhfTV3B1RHWW5FSegjFhY0cB/nOIn6T3wVEqgrcK00Ipmj7mpA8Rm3VYdIMPzb1wF6fOC+x96kNw//F+9Qq9E2uUVTdcLjnhqN1wBNDWoJygDN1WoJkGpSS0C2TJznOWOeFxh/m8GucUyS76eUQtwizU5gLtUj9ICoVYxRLFXDvgBVtbKCZNP6dA5kpToFsiZ7sQjoInUxZLWvToEsXFhrY8PC7mCL/zJhZb26GLpiZp2ddTPrwd4FMXFgMWIDDjFMXZjwwamzG5Pz9wMTND/rb9fijAAAAABJRU5ErkJggg==" />
+					</div>
+					<div class="logo">
+						<img class="font-7" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGMAAACKCAMAAACJrgTtAAAAWlBMVEUAAAB1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0x1q0zww3koAAAAHXRSTlMAzAroct50+7TxcCX2hS4WCI8cEKigl3tq6q9lTodmCHYAAADTSURBVGje7dZJDsIwEERRk5kwhjEMuf81kdj0JpYs0Z04+NcFvt6u3Mp6nXOD9RoaNIaBBo2f19o38syuIQyzhjDsGsIwawjDriEMs4Yw7BrCsG0IQ+WX1F6G2vZ+htoaT6NYFuMJA4Y24wIjlFHDiIexgZEY4woDBgwY0TNu9owTDBgwxhlbGIHrYATuAAMGjNkYuwkYaxgwlBlnGDC+q2DMwLjDSIuRPWCkxahghDJyGIEr/oPRwoCxQMZxAkYPI5RRwkiL8YIBQ5vxLsfXu/j3AUo/FCN9ryuJAAAAAElFTkSuQmCC" />
+					</div>
+				</div>
+				<div class="loading-tip">
+					要健康，上724
+					<div class="dots">
+						<div class="dots-inner">...</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

@@ -58,12 +58,11 @@ export default {
     }
 }
 </script>
-<style scoped lang="sass">
+<style scoped lang="less">
 .navbar {
 	.bg-opacity {
 	    -webkit-box-shadow: 0 0 0px rgba(0, 0, 0, 0);
 	    box-shadow: 0 0 0px rgba(0, 0, 0, 0);
 	}
 }
-
 </style>

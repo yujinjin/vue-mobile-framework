@@ -5,7 +5,7 @@
  */
 export default {
 	state: {
-		events:{},//事件集合 {name:[]}格式
+		events:{}//事件集合 {name:[]}格式
 	},
 	
 	mutations: {
@@ -23,7 +23,7 @@ export default {
             }
             callbacks.find(function(value, index, arr){
             	if(value === callback) {
-            		callbacks.splice(0, 1);
+            		callbacks.splice(index, 1);
             		return true;
             	}
             });

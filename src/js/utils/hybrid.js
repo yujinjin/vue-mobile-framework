@@ -137,21 +137,11 @@ module.exports = (function(){
 					app.globalService.setUserInfo({
 						referralCode: userInfo.referralCode, 
 						token: userInfo.authToken, 
-						usernameOrEmailAddress: "", 
 						expiredTime: userInfo.expiredIn, 
-						info: {
-							"name": userInfo.name,
-						    "profile": {
-						        "birthday": userInfo.userInfo.profile.birthday, //生日
-						        "gender": userInfo.userInfo.profile.gender //性别
-						    },
-						    "fullName": userInfo.userInfo.fullName,
-						    "headImgURL": userInfo.userInfo.headImgURL ,
-						    "idCardNumber": userInfo.userInfo.idCardNumber,
-						    "weChatQRCodeImgURL": userInfo.weChatQRCodeImgURL
-						}
+						info: userInfo.userInfo,
+						isBindMobile: true
 					}, false);
-				} else if(dataInfo.tagname === "login") {
+				} else if(dataInfo.tagname === "logout") {
 					// native 登出
 					app.globalService.logOut();
 				}
@@ -319,12 +309,26 @@ module.exports = (function(){
 		},
 		
 		// 用户分享
-		share(param, callbackFun){
-			if(!param || (!param.title && !param.desc && !param.img && !param.url)){
-				app.log.error({message: "用户分享协议内容错误", param});
+		share({title='要健康，上724', desc='健康中国，从自我保健开始，您的健康，从724开始', img=app.utils.getLocalImageUrl(), url=window.location.href}={}, callbackFun){
+			if(!title && !desc && !img && !url){
+				app.log.error({message: "用户分享协议内容错误"});
 				return;
 			}
-			return underlying.requestHybrid("share", param, callbackFun);
+			return underlying.requestHybrid("share", {title, desc, img, url}, callbackFun);
+		},
+		
+		// 用户海报分享协议
+		sharePoster({img = ""}, callbackFun){
+			if(!img){
+				app.log.error({message: "用户海报分享协议"});
+				return;
+			}
+			return underlying.requestHybrid("sharePoster", {img}, callbackFun);
+		},
+		
+		// 显示管理师发布文章、视频的弹窗
+		showManagersReleasePopup(){
+			return underlying.requestHybrid("showmanagersreleasepopup", {title, desc, img, url}, callbackFun);
 		},
 		
 		// 设置数据存储
@@ -354,13 +358,22 @@ module.exports = (function(){
 			return underlying.requestHybrid("removestorage", param, callbackFun);
 		}, 
 		
-		// 更新native数据 actions:sport-days|
+		// 更新native数据 actions:sport-days|chooseCouponsIdList|isAgreeJk724Agreement
 		updateNativeData(param, callbackFun){
 			if(!param || !param.actions){
 				app.log.error({message: "更新native数据协议内容错误", param});
 				return;
 			}
 			return underlying.requestHybrid("updatenativedata", param, callbackFun);
+		},
+		
+		// 获取native数据 actions:orderPreviewTotalPrice|orderPreviewProductIdList|sessionId|cookieId
+		getNativeData(param, callbackFun){
+			if(!param || !param.actions){
+				app.log.error({message: "获取native数据协议内容错误", param});
+				return;
+			}
+			return underlying.requestHybrid("getnativedata", param, callbackFun);
 		},
 		
 		//清除webview下的回调函数

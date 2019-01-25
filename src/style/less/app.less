@@ -6,7 +6,12 @@ html,body {
 
 /** iOS h5页面上下滑动卡顿问题  **/
 * {
-    -webkit-overflow-scrolling: touch;
+	-webkit-overflow-scrolling: touch;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	outline: none;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -39,9 +44,11 @@ img {
 	-ms-interpolation-mode: bicubic;
 	-webkit-user-drag: none;
 }
-li{
+
+li {
 	display:block;
 }
+
 [v-cloak] {
 	display: block;
 }
@@ -76,16 +83,12 @@ li{
 	height: auto;
 	min-height: 100vh;
 	// 为了兼容APP，webview的高度是100%，而mui 的scroll-box必须是指定高度的，针对于padding-top无效
-	&.mui-content {
+	&.pages-content {
 	    padding-top: 0px;
 	    margin-top: 44px;
-	    min-height: -moz-calc(~'100vh - 44px');
-	    min-height: -webkit-calc(~'100vh - 44px');
 	    min-height: calc(~'100vh - 44px');
 	    
 	    &.toolbar-fixed {
-	        min-height: -moz-calc(~'100vh - 44px - 50px');
-	        min-height: -webkit-calc(~'100vh - 44px - 50px');
 	        min-height: calc(~'100vh - 44px - 50px');
 	    }
 	}
@@ -93,8 +96,6 @@ li{
 	&.toolbar-fixed {
         padding-bottom: 0px;
         margin-bottom: 50px;
-        min-height: -moz-calc(~'100vh - 50px');
-        min-height: -webkit-calc(~'100vh - 50px');
         min-height: calc(~'100vh - 50px');
     }
 }
@@ -114,7 +115,6 @@ li{
 	width: 100%;
 	min-width: 320px;
 	max-width: 540px;
-	display: -webkit-flex;
 	display: flex;
 }
 
@@ -153,13 +153,11 @@ li{
 
 .prev-enter,.prev-leave-active {
 	opacity: 0;
-	-webkit-transform: translate3d(-50%, 0, 0);
 	transform: translate3d(-50%, 0, 0);
 }
 
 .prev-active {
 	opacity: 0;
-	-webkit-transform: translate3d(0, 0, 0);
 	transform: translate3d(0, 0, 0);
 }
 
@@ -169,21 +167,6 @@ li{
 
 ::-webkit-scrollbar {
 	display: none;
-}
-
-.mui-title {
-	font-style: normal;
-	font-weight: normal;
-}
-
-.mui-bar-nav.mui-bar .right-bar-text {
-	font-size: 14px;
-	line-height: 24px;
-	color: #999999;
-}
-
-.mui-icon-left-nav:before {
-	color: #afafaf;
 }
 
 .overflow-scroll {
@@ -227,3 +210,23 @@ img[lazy=loaded], img[lazy=error] {
     padding-top: 20px;
 }
 /******** iOS状态栏(ios contents高度是从状态栏开始) end *****/
+
+/* 普通单行样式（必须指定宽度） */
+.ellipsis {
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 多行样式(不要有padding) */
+.ellipsis {
+    display: -webkit-box;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}

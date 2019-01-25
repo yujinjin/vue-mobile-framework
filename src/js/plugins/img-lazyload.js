@@ -5,13 +5,13 @@
  */
 import vueLazyload from '../lib/vue-lazyload';
 
-export default(function() {
+export default (function() {
 	return {
 		install(Vue, options) {
 			Vue.use(vueLazyload, Object.assign({
 				preLoad: 1.3,
 				error: require("../../imgs/error.jpg"),
-				loading: require("../../fonts/loading-spin.svg"),
+				loading: require("../../imgs/loading-spin.svg"),
 				attempt: 1, //出错时只尝试加载次数
 				filter: {
 					progressive(listener, options) {

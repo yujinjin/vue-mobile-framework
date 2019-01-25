@@ -41,5 +41,14 @@ export default class abstractEnv {
 	}
 	
 	// 分享
-	share({shareTitle, shareLink, shareDes, shareImg, onShareAppMessageSuccess, onShareTimelineSuccess}, callbackFun){}
+	share({shareTitle, shareLink, shareDes, shareImg, onShareAppMessageSuccess, onShareTimelineSuccess}, callbackFun){
+		if(callbackFun && typeof(callbackFun) === "function"){
+			callbackFun(true);
+		}
+	}
+	
+	// 通过事件触发分享
+	shareEvent(shareInfo, callbackFun, isChange, shareEventInstance){
+		app.message.warning("请在微信或APP里分享");
+	}
 }

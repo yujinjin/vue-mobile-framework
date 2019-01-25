@@ -27,12 +27,12 @@ export default (function(){
 			app.loadingAnimation = Vue.prototype.$loadingAnimation = {
 				// 显示
 		        show() {
-		            //getInstance().showTransition();
+		            getInstance().showTransition();
 		        },
 		
 		        // 隐藏
 		        hide() {
-		            //getInstance().endTransition();
+		            getInstance().endTransition();
 		        }
 			}
 		}

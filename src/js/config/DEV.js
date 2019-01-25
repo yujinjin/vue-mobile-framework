@@ -4,12 +4,15 @@
  * 描述：dev 外部接口配置文件
  */
 module.exports = {
+	//当前环境
+	env: "DEV", 
 	//M站点的接口地址
-	webapiDomain: window.location.protocol + "",
-	//图片上传服务 window.location.protocol
-	uploadImgServer: window.location.protocol + "",
+	webapiDomain: window.location.protocol + '//wxdev.jk724.com/',
+	//webapiDomain: window.location.protocol + '//wx.dev.jk724.com/',
+	//图片上传服务
+	uploadImgServer: window.location.protocol + '//resource.jk724.com/Uploader/UploadImage',
 	//本地站点的地址
-	localDomain: window.location.protocol + "",
+	localDomain: window.location.origin,
 	//获取资源服务器地址
-	imageDomain: window.location.protocol + ""
+	imageDomain: window.location.protocol + '//img.jk724.com'
 }

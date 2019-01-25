@@ -13,8 +13,8 @@ export default class weiXinEnv extends abstractEnv {
 	
 	// 初始化vueApp初始化
 	initVue(initVueFun){
-		// 如果是调试模式或者用户已经登录了，就不再去微信自动登录
-		if(app.Config.isDebug || app.globalService.isLogin()) {
+		// 如果是调试模式或者用户已经微信授权登录了，就不再去微信自动登录
+		if(app.Config.isDebug || app.globalService.getLoginUserToken()) {
 			initVueFun();
 			return;
 		}
@@ -33,16 +33,17 @@ export default class weiXinEnv extends abstractEnv {
 				if(jump_href.substr(jump_href.length-1) === "?") {
 					jump_href = jump_href.substring(0, jump_href.length-1);
 				}
-				app.api.user.loginByWxCode({providerCode: code}).then((result)=>{
+				app.api.user.loginByWxCode({providerCode: code, referralCode: app.globalService.getInvitationCode() || app.utils.parseUrl(window.location.href).params.icd}).then((result)=>{
 					if(result.providerKey) {
 						//TODO: 由于后端接口人员不提供providerKey，这样会导致用户登录过期会再次刷白屏请求4次去登录
 						app.globalService.setWxAuthenticateInfo({authenticateId: result.providerKey, expiredTime: 60 * 60 * 24 * 365});
 					}
-					if(result || result.token) {
-						app.globalService.setUserInfo({referralCode:result.referralCode, token:result.authToken, expiredTime: result.expiredIn, info: result.userInfo});
+					if(result && result.authToken) {
+						app.globalService.setUserInfo({referralCode:result.referralCode, token:result.authToken, expiredTime: result.expiredIn, info: result.userInfo, isBindMobile: result.isBindMobile});
 					}
 					window.location.href = jump_href;
 		        }).catch(()=>{
+		        	app.log.error({message: "authenticateByProviderCode 接口数据调试 异常"});
 		        	window.location.href = jump_href;
 		        });
 			} else {
@@ -66,9 +67,9 @@ export default class weiXinEnv extends abstractEnv {
 			}
 		} else {
 			// 如果没有登录自动去登录
-			app.api.user.loginByWxCode({providerCode: app.globalService.getWxAuthenticateInfo().authenticateId}, {isShowError: false}).then((result)=>{
-				if(result || result.token) {
-					app.globalService.setUserInfo({referralCode: result.referralCode, token:result.authToken, expiredTime:result.expiredIn, info: result.userInfo});
+			app.api.user.loginByWxCode({providerCode: app.globalService.getWxAuthenticateInfo().authenticateId, referralCode: app.globalService.getInvitationCode() || app.utils.parseUrl(window.location.href).params.icd}, {isShowError: false}).then((result)=>{
+				if(result && result.authToken) {
+					app.globalService.setUserInfo({referralCode: result.referralCode, token:result.authToken, expiredTime:result.expiredIn, info: result.userInfo, isBindMobile: result.isBindMobile});
 				}
 				initVueFun();
 	        }).catch((error)=>{
@@ -143,5 +144,13 @@ export default class weiXinEnv extends abstractEnv {
 				callbackFun(result);
 			}
 		});
+	}
+	
+	// 通过事件触发分享
+	shareEvent(shareInfo, callbackFun, isChange, shareEventInstance){
+		if(isChange) {
+			app.share(shareInfo, callbackFun);
+		}
+		shareEventInstance.show();
 	}
 }

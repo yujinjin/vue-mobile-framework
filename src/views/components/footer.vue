@@ -41,7 +41,7 @@
 		}
 	}
 </script>
-<style lang="less" rel="stylesheet/less" type="text/css" scoped>
+<style lang="less" scoped>
 	.footer-bar {
 		position: fixed;
 		z-index: 10;

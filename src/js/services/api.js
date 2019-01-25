@@ -5,4 +5,9 @@
  */
 import user from './api/user'
 import common from './api/common'
-export default {user, common}
+
+export default {
+	user,
+	common
+}
+

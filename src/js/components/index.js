@@ -5,9 +5,6 @@
  */
 
 import Vue from 'vue'
-import listLoading from './views/list-loading.vue'
-import vueCoreImageUpload from './views/vue-core-image-upload/vue-core-image-upload.vue'
+// import vueCoreImageUpload from 'vue-core-image-upload'
 
-
-Vue.component("list-loading", listLoading);
-Vue.component("vue-core-image-upload", vueCoreImageUpload);
+// Vue.component("vue-core-image-upload", vueCoreImageUpload);
