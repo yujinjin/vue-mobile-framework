@@ -1,23 +1,19 @@
 <template>
 	<footer class="footer-bar">
 		<div class="row">
-			<router-link tag="div" :to="{name:'home'}" :class="{'router-link-active': $route.name == 'home'}" class="col-xs-2" exact>
+			<router-link tag="div" :to="{name:'home'}" class="tap" exact>
 				<span class="icon icon-home"></span>
-				<span class="title">首页</span>
+				<span class="title">商城</span>
 			</router-link>
-			<router-link tag="div" :to="{name:'product-category'}" class="col-xs-2">
+			<router-link tag="div" :to="{name:'product-category'}" class="tap">
 				<span class="icon icon-class"></span>
 				<span class="title">分类</span>
 			</router-link>
-			<router-link tag="div" :to="{name:'discovery-list'}" class="col-xs-2">
-				<span class="icon icon-find"></span>
-				<span class="title">发现</span>
-			</router-link>
-			<router-link tag="div" :to="{name:'shopping-cart'}" class="col-xs-2">
-				<span class="icon icon-shoppingcart"><i v-show="shoppingCartCount > 0" class="tip">{{shoppingCartCount}}</i></span>
+			<router-link tag="div" :to="{name:'shopping-cart'}" class="tap">
+				<span class="icon icon-shoppingcart"><i v-show="shoppingCartCount > 0" class="tip">{{shoppingCartCountText}}</i></span>
 				<span class="title">购物车</span>
 			</router-link>
-			<router-link tag="div" :to="{name:'user-center'}" class="col-xs-2">
+			<router-link tag="div" :to="{name:'user-center'}" class="tap">
 				<span class="icon icon-personal"></span>
 				<span class="title">我的</span>
 			</router-link>
@@ -30,6 +26,12 @@
 		    return {
 		    	shoppingCartCount: 1
 		    };
+		},
+		computed: {
+			shoppingCartCountText(){
+				if(this.shoppingCartCount > 99) return "99+";
+				return this.shoppingCartCount;
+			}
 		},
 		mounted(){
 		    this.getShoppingCartCount();
@@ -52,43 +54,72 @@
 		border-top: 1px solid #ccc;
 		width: 100%;
 		text-align: center;
-		font-size: 10px;
-		.col-xs-2{
-			width: 20%;
-		}
-		.mui-row div {
-			height: 49px;
-		}
-		span.icon {
-			display: block;
-			width: 23px;
-			height: 23px;
-			margin: 8px auto 2px;
-			background-repeat: no-repeat;
-			background-position: center center;
-			-webkit-background-size: 100% 100%;
-			background-size: 100% 100%;
-			position: relative;
-		}
-	}
+		font-size: 11px;
 
-	.router-link-active {
-		color: #09BB07;
-		
-	}
-	.tip{
-		background: #f55424;
-		min-width: 15px;
-		height: 15px;
-		color: #fff;
-		line-height: 15px;
-		top: -2px;
-		left: 18px;
-		padding: 0 2px;
-		display: block;
-		border-radius: 15px;
-		font-style: normal;
-		position: absolute;
-		z-index: 9;
+		.row {
+			display: flex;
+
+			.tap {
+				flex: 1;
+				
+				span.icon {
+					display: block;
+					width: 23px;
+					height: 23px;
+					margin: 5px auto 2px;
+					background-repeat: no-repeat;
+					background-position: center center;
+					background-size: 90%;
+					position: relative;
+
+					.tip {
+						background: #f55424;
+						min-width: 15px;
+						height: 15px;
+						color: #fff;
+						line-height: 15px;
+						top: -2px;
+						left: 18px;
+						padding: 0 2px;
+						display: block;
+						border-radius: 15px;
+						font-style: normal;
+						position: absolute;
+						z-index: 9;
+					}
+
+					&.icon-home {
+						background-image: url("../../imgs/footer/tab_bar_store_not@2x.png");
+					}
+					&.icon-class {
+						background-image: url("../../imgs/footer/tab_bar_classify_not@2x.png");
+					}
+					&.icon-shoppingcart{
+						background-image: url("../../imgs/footer/tab_bar_shopping_not@2x.png");
+					}
+					&.icon-personal{
+						background-image: url("../../imgs/footer/tab_bar_my_not@2x.png");
+					}
+				}
+
+				
+				&.router-link-active {
+					color: #09BB07;
+
+					span.icon-home {
+						background-image: url("../../imgs/footer/tab_bar_store@2x.png");
+					}
+					span.icon-class {
+						background-image: url("../../imgs/footer/tab_bar_classify@2x.png");
+					}
+					span.icon-shoppingcart{
+						background-image: url("../../imgs/footer/tab_bar_shopping@2x.png");
+					}
+					span.icon-personal{
+						background-image: url("../../imgs/footer/tab_bar_my@2x.png");
+					}
+				}
+			}
+		}
 	}
 </style>

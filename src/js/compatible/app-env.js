@@ -270,7 +270,7 @@ export default class appEnv extends abstractEnv {
 		afterEach(route, store){
 			switch (route.name) {
 				case 'home':
-					store.dispatch("updateHeader",{left: {actions: 'empty', isShow: false}});
+					store.dispatch("updateHeader",{left: {actions: 'empty'}});
 					//.updateHeaderLeft({actions: 'empty'});
 			}
 		}

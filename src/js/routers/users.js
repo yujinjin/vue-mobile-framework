@@ -6,6 +6,16 @@
 
 export default function(modules){
 	return [{
+		path: '/users/login', //登录-绑定手机
+		name: "login",
+		meta: {
+			authType: 0,
+			title: "绑定手机"
+		},
+		components: resolve => require(['../../views/users/login.vue'], function(component) {
+			resolve(modules.extend(component));
+		})
+	}, {
 		path: '/users/user-center', //用户中心
 		name: "user-center",
 		meta: {
@@ -28,13 +38,12 @@ export default function(modules){
 			resolve(modules.extend(component));
 		})
 	}, {
-		path: '/users/login', //登录-绑定手机
-		name: "login",
+		path: '/users/choose-coupons', //选择优惠券
+		name: "choose-coupons",
 		meta: {
-			authType: 0,
-			title: "绑定手机"
+			title: "选择优惠券"
 		},
-		components: resolve => require(['../../views/users/login.vue'], function(component) {
+		components: resolve => require(['../../views/users/choose-coupons.vue'], function(component) {
 			resolve(modules.extend(component));
 		})
 	}, {
@@ -47,12 +56,12 @@ export default function(modules){
 			resolve(modules.extend(component));
 		})
 	}, {
-		path: '/users/my-address', //地址管理
-		name: "my-address",
+		path: '/users/address-manager', //地址管理
+		name: "address-manager",
 		meta: {
 			title: "地址管理"
 		},
-		components: resolve => require(['../../views/users/address/my-address.vue'], function(component) {
+		components: resolve => require(['../../views/users/address/address-manager.vue'], function(component) {
 			resolve(modules.extend(component));
 		})
 	}, {
@@ -71,7 +80,7 @@ export default function(modules){
 			title: "消息中心",
 			isDefaultTitle: false
 		},
-		components: resolve => require(['../../views/users/message-center.vue'], function(component) {
+		components: resolve => require(['../../views/users/message/message-center.vue'], function(component) {
 			resolve(modules.extend(component));
 		})
 	}, {
@@ -81,7 +90,7 @@ export default function(modules){
 			title: "消息列表",
 			isDefaultTitle: false
 		},
-		components: resolve => require(['../../views/users/message-list.vue'], function(component) {
+		components: resolve => require(['../../views/users/message/message-list.vue'], function(component) {
 			resolve(modules.extend(component));
 		})
 	}, {
@@ -90,16 +99,26 @@ export default function(modules){
 		meta: {
 			title: "消息内容"
 		},
-		components: resolve => require(['../../views/users/message-details.vue'], function(component) {
+		components: resolve => require(['../../views/users/message/message-details.vue'], function(component) {
 			resolve(modules.extend(component));
 		})
 	}, {
-		path: '/users/system-message-details/:id', // 消息详情
+		path: '/users/system-message-details/:id', // 公告消息详情
 		name: "system-message-details",
 		meta: {
 			title: '公告消息'
 		},
-		components: resolve => require(['../../views/users/system-message-details.vue'], function(component) {
+		component: resolve => require(['../../views/users/message/system-message-details.vue'], function(component) {
+			resolve(modules.extend(component));
+		})
+	}, {
+		path: '/users/my-collections', //我的收藏
+		name: "my-collections",
+		meta: {
+			authType: 1,
+			title: "我的收藏"
+		},
+		components: resolve => require(['../../views/users/my/my-collections.vue'], function(component) {
 			resolve(modules.extend(component));
 		})
 	}];

@@ -5,6 +5,10 @@
  */
 
 import Vue from 'vue'
+import svgIcon from './icons'
+
+
+Vue.component("svg-icon", svgIcon);
 // import vueCoreImageUpload from 'vue-core-image-upload'
 
 // Vue.component("vue-core-image-upload", vueCoreImageUpload);

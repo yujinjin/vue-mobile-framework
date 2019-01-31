@@ -19,9 +19,13 @@
 
 import globalService from '../services/global-service'
 import modules from '../utils/modules'
-import test from './test'
-import users from './users'
+import marketing from './marketing'
 import others from './others'
+import product from './product'
+import order from './order'
+import payment from './payment'
+import users from './users'
+import test from './test'
 
 export default (function(){
     let routers = {
@@ -191,8 +195,12 @@ export default (function(){
         }
     }
     
-    routers.routes.push(...test(modules));
-    routers.routes.push(...users(modules));
+    routers.routes.push(...marketing(modules));
     routers.routes.push(...others(modules));
+    routers.routes.push(...product(modules));
+    routers.routes.push(...order(modules));
+    routers.routes.push(...payment(modules));
+    routers.routes.push(...users(modules));
+    routers.routes.push(...test(modules));
     return routers;
 })();

@@ -22,7 +22,7 @@ export default function(modules){
 			authType: 0,
 			title: "未发现该页面"
 		},
-		components: resolve => require(['../../views/error/404.vue'], function(component) {
+		components: resolve => require(['../../views/others/error/404.vue'], function(component) {
 			resolve(modules.extend(component));
 		})
 	}];

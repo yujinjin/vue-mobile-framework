@@ -24,8 +24,7 @@ export default {
 				actions: 'back', // 动作协议，作用于APP
 				icon: "back", // native图标，作用于APP
 				value: "", // native文案，作用于APP
-				className: "mui-icon-back", // 左边class名称
-				isShow: true, // 是否显示
+				className: "", // 左边class名称
 				contents: "", // 左边标签内容
 				callback: null, // 左边回调函数
 			},
@@ -34,7 +33,6 @@ export default {
 				icon: "", // native图标，作用于APP
 				value: "", // native文案，作用于APP
 				className: null, // 中部class名称
-				isShow: true, // 是否显示
 				contents: "", // 中部标签内容
 				callback: null // 中部回调函数
 			},
@@ -43,7 +41,6 @@ export default {
 				icon: "", // native图标，作用于APP
 				value: "", // native文案，作用于APP
 				className: null, // 右边class名称
-				isShow: false, // 是否显示
 				contents: "", // 右边标签内容
 				callback: null, // 右边回调函数
 			},
@@ -113,7 +110,6 @@ export default {
 			state.headerState = true;
 			if (left && typeof(left) === "object") {
 				state.header.left.className = left.className || null;
-				state.header.left.isShow = (left.isShow == false ? false : true);
 				state.header.left.contents = left.contents || "";
 				state.header.left.actions = left.actions || "";
 				state.header.left.icon = left.icon || "";
@@ -122,7 +118,6 @@ export default {
 			}
 			if (center && typeof(center) === "object") {
 				state.header.center.className = center.className || null;
-				state.header.center.isShow = (center.isShow == false ? false : true);
 				state.header.center.contents = center.contents || "";
 				state.header.center.actions = center.actions || "";
 				state.header.center.icon = center.icon || "";
@@ -131,7 +126,6 @@ export default {
 			}
 			if (right && typeof(right) === "object") {
 				state.header.right.className = right.className || null;
-				state.header.right.isShow = (right.isShow == true ? true : false);
 				state.header.right.contents = right.contents || "";
 				state.header.right.actions = right.actions || "";
 				state.header.right.icon = right.icon || "";
@@ -155,7 +149,6 @@ export default {
 					icon: "back", // native图标，作用于APP
 					value: "", // native文案，作用于APP
 					className: null, // 左边class名称
-					isShow: true, // 是否显示
 					contents: "", // 左边标签内容
 					callback: null, // 左边回调函数
 				},
@@ -164,7 +157,6 @@ export default {
 					icon: "", // native图标，作用于APP
 					value: "", // native文案，作用于APP
 					className: null, // 中部class名称
-					isShow: true, // 是否显示
 					contents: "", // 中部标签内容
 					callback: null // 中部回调函数
 				},
@@ -173,7 +165,6 @@ export default {
 					icon: "", // native图标，作用于APP
 					value: "", // native文案，作用于APP
 					className: null, // 右边class名称
-					isShow: false, // 是否显示
 					contents: "", // 右边标签内容
 					callback: null, // 右边回调函数
 				},
