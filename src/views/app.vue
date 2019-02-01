@@ -4,9 +4,9 @@
 		<div class="pages" :class="{'pages-content': $store.state.appData.isShowHead && !isApp, 'toolbar-fixed': $store.state.appData.isShowFoot  && !isApp}">
 			<!--<transition :name="$store.state.appData.transition">-->
 			<!-- 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们 -->
-			<!--<keep-alive>-->
+			<keep-alive :include="cachedRouters">
 			<router-view class="page"></router-view>
-			<!--</keep-alive>-->
+			</keep-alive>
 			<!--</transition>-->
 		</div>
 		<footerBar v-if="!isApp" v-show="$store.state.appData.isShowFoot"></footerBar>
@@ -23,6 +23,7 @@
 				isApp: app.Config.isApp, // 是否在APP环境内
 				isIOS: app.Config.device.isIOS, // 是否是iOS APP
 				isAndroid: app.Config.device.isAndroid,//是否是andriod APP
+				cachedRouters: ["home", "product-category", "shopping-cart", "user-center"] // 当前缓存的路由名称
 	        }
 	    },
 	    components: {footerBar, navbar},
